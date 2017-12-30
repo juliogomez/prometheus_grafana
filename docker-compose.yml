@@ -1,0 +1,26 @@
+version: '3.3'
+
+networks:
+  monitoring:
+    attachable: true
+
+configs:
+  prometheus_config_step_1:
+    file: ./prometheus.yml
+
+services:
+
+  prometheus:
+    image: 'prom/prometheus:v1.8.2'
+    ports:
+      - '9090:9090'
+    networks:
+      - monitoring
+    command: >-
+      -config.file=/etc/prometheus/prometheus.yml
+      -storage.local.path=/prometheus
+      -web.console.libraries=/etc/prometheus/console_libraries
+      -web.console.templates=/etc/prometheus/consoles
+    configs:
+      - source: prometheus_config_step_1
+        target: /etc/prometheus/prometheus.yml
