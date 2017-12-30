@@ -5,25 +5,12 @@ networks:
     attachable: true
 
 configs:
-  prometheus_config_step_2:
+  prometheus_config_step_7:
     file: ./prometheus.yml
+  prometheus_alerts_step_7:
+    file: ./alert.rules
 
 services:
-
-  prometheus:
-    image: 'prom/prometheus:v1.8.2'
-    ports:
-      - '9090:9090'
-    networks:
-      - monitoring
-    command: >-
-      -config.file=/etc/prometheus/prometheus.yml
-      -storage.local.path=/prometheus
-      -web.console.libraries=/etc/prometheus/console_libraries
-      -web.console.templates=/etc/prometheus/consoles
-    configs:
-      - source: prometheus_config_step_2
-        target: /etc/prometheus/prometheus.yml
 
   cadvisor:
     image: 'google/cadvisor:v0.26.1'
@@ -37,14 +24,7 @@ services:
       - '/var/lib/docker/:/var/lib/docker'
     deploy:
       mode: global
-
-  docker-exporter:
-    image: 'basi/socat:v0.1.0'
-    networks:
-      - monitoring
-    deploy:
-      mode: global
-
+  
   node-exporter:
     image: 'basi/node-exporter'
     networks:
@@ -61,3 +41,101 @@ services:
       --collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($$|/)"
     deploy:
       mode: global
+
+  docker-exporter:
+    image: 'basi/socat:v0.1.0'
+    networks:
+      - monitoring
+    deploy:
+      mode: global
+
+  prometheus:
+    image: 'prom/prometheus:v1.8.2'
+    ports:
+      - '9090:9090'
+    networks:
+      - monitoring
+    command: >-
+      -config.file=/etc/prometheus/prometheus.yml
+      -storage.local.path=/prometheus
+      -web.console.libraries=/etc/prometheus/console_libraries
+      -web.console.templates=/etc/prometheus/consoles
+      -alertmanager.url=http://alertmanager:9093
+    configs:
+      - source: prometheus_config_step_7
+        target: /etc/prometheus/prometheus.yml
+      - source: prometheus_alerts_step_7
+        target: /etc/prometheus/alert.rules
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  postgres:
+    image: postgres:9
+    networks:
+      - monitoring
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  postgres-exporter:
+    image: wrouesnel/postgres_exporter:v0.2.3
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:password@postgres/?sslmode=disable"
+    networks:
+        - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  traefik:
+    image: traefik:v1.4-alpine
+    networks:
+      - monitoring
+    command: >-
+      --debug
+      --web.metrics
+      --web.metrics.prometheus
+    ports:
+      - '80:80'
+    deploy:
+      mode: replicated
+      replicas: 3
+
+  grafana:
+    image: 'basi/grafana:4.4.3'
+    ports:
+      - '3000:3000'
+    networks:
+      - monitoring
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 'admin'
+      PROMETHEUS_ENDPOINT: 'http://prometheus:9090'
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  alertmanager:
+    image: 'basi/alertmanager:v0.8.0'
+    networks:
+      - monitoring
+    ports:
+      - '9093:9093'
+    environment:
+      SLACK_API: 'https://hooks.slack.com/services/YOUR/API/key'
+    command: '-config.file=/etc/alertmanager/config.yml'
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  test:
+    image: alpine
+    command: exit 1
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 5
