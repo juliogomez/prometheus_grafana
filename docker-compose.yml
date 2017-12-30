@@ -5,7 +5,7 @@ networks:
     attachable: true
 
 configs:
-  prometheus_config_step_1:
+  prometheus_config_step_2:
     file: ./prometheus.yml
 
 services:
@@ -22,5 +22,18 @@ services:
       -web.console.libraries=/etc/prometheus/console_libraries
       -web.console.templates=/etc/prometheus/consoles
     configs:
-      - source: prometheus_config_step_1
+      - source: prometheus_config_step_2
         target: /etc/prometheus/prometheus.yml
+
+  cadvisor:
+    image: 'google/cadvisor:v0.26.1'
+    networks:
+      - monitoring
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock,readonly'
+      - '/:/rootfs'
+      - '/var/run:/var/run'
+      - '/sys:/sys'
+      - '/var/lib/docker/:/var/lib/docker'
+    deploy:
+      mode: global
