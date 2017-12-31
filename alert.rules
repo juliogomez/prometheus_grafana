@@ -1,0 +1,7 @@
+ALERT deleted_container_rate_on_hosts
+  IF sum without(instance) (rate(engine_daemon_container_actions_seconds_count{action="delete"}[1m])) > 0.1
+  FOR 1m
+  ANNOTATIONS {
+      summary = "DELETED CONTAINER RATE WARNING ON '{{ $labels.instance }}'",
+      description = "{{ $labels.instance }} has a HIGH rate of deleted containers. Deleted container rate is {{ humanize $value}}%.",
+  }
