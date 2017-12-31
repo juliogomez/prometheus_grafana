@@ -140,7 +140,7 @@ The same way you did in the previous step, please go to Prometheus web interface
 
 You may choose on of these container metrics (for example 'node_memory_Active'), click on 'Execute' and go to 'Graph'. Again you will see a basic graph for some node metrics.
 
-## Deploy Postgres, Traefik and Grafana
+## Deploy Postgres, Traefik and Grafana
 
 Using the same procedure let's now deploy a couple of additional exporters.
 
@@ -165,8 +165,8 @@ docker stack deploy -c docker-compose.yml my-stack
 
 The same way you did in the previous step, please go to Prometheus web interface (**9090** link on top of the PWD screen), check that the configuration looks correct, and the targets are all 'UP' (1x Prometheus, 5x cAdvisor, 5x node-exporter, 1x Postgres, 3x Traefik instances). In the 'Graph' section you will find more available metrics in the drop-down menu.
 
-Additionally you can now check Grafana web interface, available via the new **3000** link in the top part of the PWD screen. Click on it and login with admin/admin. Then click on the icon situated on the top left and choose 'Dashboards' - 'Import'. Under 'Grafana.com Dashboard' type the number of one of the available templates: for example 609. Under 'Options' click on 'Select a Prometheus data source' and choose 'Prometheus'. For both 'ElasticSearch' drop-down menus select 'Alerts'. Click on 'Import' and you will start seeing your new dashboard. On the top right click on 'Last 24 hours' and choose 'Last 15 minutes'.
+Additionally you can now check Grafana web interface, available via the new **3000** link in the top part of the PWD screen. Click on it and login with admin/admin. Then click on the icon situated on the top left and choose 'Dashboards' - 'Import'. Under 'Grafana.com Dashboard' type the number of one of the available templates: for example 609, and 'Load'. Under 'Options' click on 'Select a Prometheus data source' and choose 'Prometheus'. For both 'ElasticSearch' drop-down menus select 'Alerts'. Click on 'Import' and you will start seeing your new dashboard. On the top right click on 'Last 24 hours' and choose 'Last 15 minutes'.
 
 **Congrats!!!** Now you have a beautiful Grafana dashboard that dynamically shows useful live information on multiple container and node metrics!
 
-You may import another example dashboard template, for example number 893, by following the same procedure.
+Bonus points: you may import another example dashboard template, for example number 893, by following the same procedure.
