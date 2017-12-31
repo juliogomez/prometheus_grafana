@@ -38,13 +38,6 @@ services:
     deploy:
       mode: global
 
-  docker-exporter:
-    image: 'basi/socat:v0.1.0'
-    networks:
-      - monitoring
-    deploy:
-      mode: global
-
   node-exporter:
     image: 'basi/node-exporter'
     networks:
