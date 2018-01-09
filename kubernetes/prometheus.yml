@@ -6,6 +6,6 @@ scrape_configs:
   - job_name: 'prometheus'
     dns_sd_configs:
     - names:
-      - 'prometheus.default.svc.cluster.local'
+      - prometheus.default.svc.cluster.local
       type: 'A'
       port: 9090
