@@ -39,6 +39,7 @@ spec:
           name: prom-config
         ports:
         - containerPort: 9090
+          name: prometheus-scrape
       volumes:
       - name: prom-config
         hostPath:
@@ -78,42 +79,10 @@ spec:
       containers:
       - image: google/cadvisor:v0.26.1
         name: cadvisor
-        volumeMounts:
-        - mountPath: /var/run
-          name: varrun
-        - mountPath: /var/run/docker.sock
-          name: varrundockersock
-        - mountPath: /rootfs
-          name: root
-        - mountPath: /var/lib/docker
-          name: varlibdocker
-        - mountPath: /sys
-          name: sysfs
         ports:
         - containerPort: 8080
           hostPort: 8080
           name: cadvisor-scrape
-      volumes:
-      - name: varrun
-        hostPath:
-          path: /var/run
-          type: Directory
-      - name: varrundockersock
-        hostPath:
-          path: /var/run/docker.sock
-          type: File
-      - name: root
-        hostPath:
-          path: /
-          type: Directory
-      - name: varlibdocker
-        hostPath:
-          path: /var/lib/docker
-          type: Directory
-      - name: sysfs
-        hostPath:
-          path: /sys
-          type: Directory
       hostNetwork: true
       hostPID: true
 ---
@@ -127,7 +96,7 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: scrape
+  - name: "9100"
     port: 9100
     protocol: TCP
   selector:
@@ -151,6 +120,6 @@ spec:
         ports:
         - containerPort: 9100
           hostPort: 9100
-          name: scrape
+          name: node-exporter-scrape
       hostNetwork: true
       hostPID: true
