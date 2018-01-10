@@ -74,6 +74,22 @@ spec:
       labels:
         service: cadvisor
     spec:
+      containers:
+      - image: google/cadvisor:v0.26.1
+        name: cadvisor
+        volumeMounts:
+        - mountPath: /var/run
+          name: varrun
+        - mountPath: /var/run/docker.sock
+          name: varrundockersock
+        - mountPath: /
+          name: root
+        - mountPath: /var/lib/docker
+          name: varlibdocker
+        - mountPath: /sys
+          name: sysfs
+        ports:
+        - containerPort: 8080
       volumes:
       - name: varrun
         hostPath:
@@ -95,20 +111,4 @@ spec:
         hostPath:
           path: /sys
           type: Directory
-      containers:
-      - image: google/cadvisor:v0.26.1
-        name: cadvisor
-        volumeMounts:
-        - hostPath: /var/run
-          name: varrun
-        - hostPath: /var/run/docker.sock
-          name: varrundockersock
-        - hostPath: /
-          name: root
-        - hostPath: /var/lib/docker
-          name: varlibdocker
-        - hostPath: /sys
-          name: sysfs
-        ports:
-        - containerPort: 8080
       restartPolicy: Always
