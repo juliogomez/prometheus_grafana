@@ -148,10 +148,10 @@ spec:
         image: basi/node-exporter
         command: ["/bin/node_exporter"]
         args:
-        - "--path.procfs "/host/proc" "
-        - "--path.sysfs /host/sys"
-        - "--collector.textfile.directory /etc/node-exporter/"
-        - "--collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)" "
+        - ["--path.procfs "/host/proc" "]
+        - ["--path.sysfs /host/sys"]
+        - ["--collector.textfile.directory /etc/node-exporter/"]
+        - ["--collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)" "]
         volumeMounts:
         - mountPath: /host/proc
           name: hostproc
