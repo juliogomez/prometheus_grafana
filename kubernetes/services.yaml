@@ -82,7 +82,7 @@ spec:
           name: varrun
         - mountPath: /var/run/docker.sock
           name: varrundockersock
-        - mountPath: /
+        - mountPath: /rootfs
           name: root
         - mountPath: /var/lib/docker
           name: varlibdocker
@@ -101,7 +101,7 @@ spec:
           type: File
       - name: root
         hostPath:
-          path: /rootfs
+          path: /
           type: Directory
       - name: varlibdocker
         hostPath:
