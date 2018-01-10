@@ -54,14 +54,13 @@ metadata:
     service: cadvisor
   name: cadvisor
 spec:
-  clusterIP: None
   ports:
   - name: "8080"
     port: 8080
     protocol: TCP
   selector:
     service: cadvisor
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
