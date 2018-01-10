@@ -53,24 +53,25 @@ metadata:
     service: cadvisor
   name: cadvisor
 spec:
-  type: LoadBalancer
+  clusterIP: None
   ports:
   - name: "8080"
     port: 8080
-    targetPort: 8080
+    protocol: TCP
   selector:
     service: cadvisor
+  type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
-kind: Deployment
+kind: DaemonSet
 metadata:
   labels:
     service: cadvisor
   name: cadvisor
 spec:
-  replicas: 1
   template:
     metadata:
+      name: cadvisor
       labels:
         service: cadvisor
     spec:
@@ -90,6 +91,8 @@ spec:
           name: sysfs
         ports:
         - containerPort: 8080
+          hostPort: 8080
+          name: cadvisor-scrape
       volumes:
       - name: varrun
         hostPath:
@@ -111,7 +114,8 @@ spec:
         hostPath:
           path: /sys
           type: Directory
-      restartPolicy: Always
+      hostNetwork: true
+      hostPID: true
 ---
 apiVersion: v1
 kind: Service
