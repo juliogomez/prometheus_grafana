@@ -58,6 +58,7 @@ spec:
   ports:
   - name: "8080"
     port: 8080
+    targetPort: 8080
     protocol: TCP
   selector:
     service: cadvisor
