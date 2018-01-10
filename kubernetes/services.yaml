@@ -83,7 +83,6 @@ spec:
         - containerPort: 8080
           hostPort: 8080
           name: cadvisor-scrape
-#      hostPID: true
 ---
 apiVersion: v1
 kind: Service
@@ -121,4 +120,3 @@ spec:
         - containerPort: 9100
           hostPort: 9100
           name: node-exp-scrape
-      hostPID: true
