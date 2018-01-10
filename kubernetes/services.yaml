@@ -45,3 +45,70 @@ spec:
           path: /prometheus_grafana/kubernetes/prometheus.yml
           type: File
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: cadvisor
+  name: cadvisor
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    service: cadvisor
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: cadvisor
+  name: cadvisor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: cadvisor
+    spec:
+      containers:
+      - image: google/cadvisor:v0.26.1
+        name: cadvisor
+        volumeMounts:
+        - mountPath: /var/run
+          name: varrun
+        - mountPath: /var/run/docker.sock
+          name: varrundockersock
+        - mountPath: /rootfs
+          name: root
+        - mountPath: /var/lib/docker
+          name: varlibdocker
+        - mountPath: /sys
+          name: sysfs
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: varrun
+        source:
+          hostDir:
+            path: /var/run
+      - name: varrundockersock
+        source:
+          hostDir:
+            path: /var/run/docker.sock
+      - name: root
+        source:
+          hostDir:
+            path: /
+      - name: varlibdocker
+        source:
+          hostDir:
+            path: /var/lib/docker
+      - name: sysfs
+        source:
+          hostDir:
+            path: /sys
+      restartPolicy: Always
