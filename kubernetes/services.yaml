@@ -2,6 +2,85 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    service: postgres
+  name: postgres
+spec:
+  type: ClusterIP
+  ports:
+  - name: "5432"
+    port: 5432
+    targetPort: 5432
+  selector:
+    service: postgres
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: postgres
+  name: postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: postgres
+    spec:
+      containers:
+      - image: postgres:9
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: pg-scrape
+        env:
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: password
+      restartPolicy: Always
+---apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: postgres-e
+  name: postgres-e
+spec:
+  type: ClusterIP
+  ports:
+  - name: "9187"
+    port: 9187
+    targetPort: 9187
+  selector:
+    service: postgres-e
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: postgres-e
+  name: postgres-e
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: postgres-e
+    spec:
+      containers:
+      - image: wrouesnel/postgres_exporter:v0.2.3
+        name: postgres-e
+        ports:
+        - containerPort: 9187
+          name: pg-scrape-e
+        env:
+          - name: DATA_SOURCE_NAME
+            value: postgresql://postgres:password@postgres/?sslmode=disable
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
     service: prometheus
   name: prometheus
 spec:
