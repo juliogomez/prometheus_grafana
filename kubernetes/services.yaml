@@ -144,13 +144,14 @@ spec:
         service: node-exporter
     spec:
       containers:
-      - args:
-        - path.procfs /host/proc
+      - name: node-exporter
+        image: basi/node-exporter
+        command: ["/bin/node_exporter"]
+        args:
+        - path.procfs "/host/proc"
         - path.sysfs /host/sys
         - collector.textfile.directory /etc/node-exporter/
         - collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
-        image: basi/node-exporter
-        name: node-exporter
         volumeMounts:
         - mountPath: /host/proc
           name: hostproc
