@@ -145,10 +145,10 @@ spec:
     spec:
       containers:
       - args:
-        - --path.procfs "/host/proc"
-        - --path.sysfs /host/sys
-        - --collector.textfile.directory /etc/node-exporter/
-        - --collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+        - path.procfs "/host/proc"
+        - path.sysfs /host/sys
+        - collector.textfile.directory /etc/node-exporter/
+        - collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
         image: basi/node-exporter
         name: node-exporter
         volumeMounts:
