@@ -112,3 +112,67 @@ spec:
           path: /sys
           type: Directory
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: node-exporter
+  name: node-exporter
+spec:
+  type: LoadBalancer
+  ports:
+  - name: headless
+    port: 55555
+    targetPort: 0
+  selector:
+    service: node-exporter
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: node-exporter
+  name: node-exporter
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: node-exporter
+    spec:
+      containers:
+      - args:
+        - --path.procfs
+        - /host/proc
+        - --path.sysfs
+        - /host/sys
+        - --collector.textfile.directory
+        - /etc/node-exporter/
+        - --collector.filesystem.ignored-mount-points
+        - ^/(sys|proc|dev|host|etc)($|/)
+        image: basi/node-exporter
+        name: node-exporter
+        volumeMounts:
+        - mountPath: /host/proc
+          name: hostproc
+        - mountPath: /host/sys
+          name: hostsys
+        - mountPath: /rootfs
+          name: rootfs
+      restartPolicy: Always
+      volumes:
+      - name: hostproc
+        hostPath:
+          path: /proc
+          type: Directory
+      - name: hostsys
+        hostPath:
+          path: /sys
+          type: Directory
+      - name: rootfs
+        hostPath:
+          path: /
+          type: Directory
