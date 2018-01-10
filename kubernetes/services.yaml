@@ -35,7 +35,7 @@ spec:
         image: prom/prometheus:v1.8.2
         name: prometheus
         volumeMounts:
-        - mountPath: /etc/prometheus/prometheus.yml
+        - hostPath: /etc/prometheus/prometheus.yml
           name: prom-config
         ports:
         - containerPort: 9090
@@ -76,38 +76,38 @@ spec:
     spec:
       volumes:
       - name: varrun
-        source:
-          hostDir:
-            path: /var/run
+        hostPath:
+          path: /var/run
+          type: Directory
       - name: varrundockersock
-        source:
-          hostDir:
-            path: /var/run/docker.sock
+        hostPath:
+          path: /var/run/docker.sock
+          type: File
       - name: root
-        source:
-          hostDir:
-            path: /rootfs
+        hostPath:
+          path: /rootfs
+          type: Directory
       - name: varlibdocker
-        source:
-          hostDir:
-            path: /var/lib/docker
+        hostPath:
+          path: /var/lib/docker
+          type: Directory
       - name: sysfs
-        source:
-          hostDir:
-            path: /sys
+        hostPath:
+          path: /sys
+          type: Directory
       containers:
       - image: google/cadvisor:v0.26.1
         name: cadvisor
         volumeMounts:
-        - mountPath: /var/run
+        - hostPath: /var/run
           name: varrun
-        - mountPath: /var/run/docker.sock
+        - hostPath: /var/run/docker.sock
           name: varrundockersock
-        - mountPath: /
+        - hostPath: /
           name: root
-        - mountPath: /var/lib/docker
+        - hostPath: /var/lib/docker
           name: varlibdocker
-        - mountPath: /sys
+        - hostPath: /sys
           name: sysfs
         ports:
         - containerPort: 8080
