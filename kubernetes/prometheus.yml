@@ -9,3 +9,10 @@ scrape_configs:
       - prometheus
       type: 'A'
       port: 9090
+
+  - job_name: 'cadvisor'
+    dns_sd_configs:
+    - names:
+      - cadvisor
+      type: 'A'
+      port: 8080
