@@ -37,3 +37,4 @@ scrape_configs:
       - traefik
       type: 'A'
       port: 8080
+
