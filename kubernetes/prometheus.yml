@@ -27,6 +27,6 @@ scrape_configs:
   - job_name: 'postgres'
     dns_sd_configs:
       - names:
-          - 'tasks.postgres-exporter'
+          - postgres-exporter
         type: 'A'
         port: 9187
