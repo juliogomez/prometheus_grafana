@@ -200,3 +200,44 @@ spec:
         - containerPort: 9100
           hostPort: 9100
           name: node-exp-scrape
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: traefik
+  name: traefik
+spec:
+  clusterIP: None
+  ports:
+  - name: "8080"
+    port: 8080
+    protocol: TCP
+  selector:
+    service: traefik
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    service: traefik
+  name: traefik
+spec:
+  template:
+    metadata:
+      name: traefik
+      labels:
+        service: traefik
+    spec:
+      containers:
+      - args:
+        - --debug
+        - --web.metrics
+        - --web.metrics.prometheus
+        image: traefik:v1.4-alpine
+        name: traefik
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+          name: traefik-scrape
