@@ -210,8 +210,8 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: "8081"
-    port: 8081
+  - name: "80"
+    port: 80
     protocol: TCP
   selector:
     service: traefik
@@ -239,5 +239,5 @@ spec:
         name: traefik
         ports:
         - containerPort: 80
-          hostPort: 8081
+          hostPort: 80
           name: traefik-scrape
