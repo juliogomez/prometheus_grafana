@@ -38,7 +38,8 @@ spec:
           - name: POSTGRES_PASSWORD
             value: password
       restartPolicy: Always
----apiVersion: v1
+---
+apiVersion: v1
 kind: Service
 metadata:
   labels:
