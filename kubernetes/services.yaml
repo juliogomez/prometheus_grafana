@@ -238,6 +238,6 @@ spec:
         image: traefik:v1.4-alpine
         name: traefik
         ports:
-        - containerPort: 8081
+        - containerPort: 80
           hostPort: 8081
           name: traefik-scrape
